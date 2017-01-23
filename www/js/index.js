@@ -61,6 +61,7 @@ var app = {
             game.load.image('bullet', 'assets/sprites/bullet.png');
             game.load.image('ship', 'assets/sprites/ship.png');
             game.load.image('background', 'assets/misc/starfield.jpg');
+            game.load.image('asteroid', 'assets/sprites/asteroid.png');
         }
 
         function create () {
@@ -85,6 +86,24 @@ var app = {
 
             weapon.trackSprite(ship, SHIP_SIZE / 2, 0, true);
             /* End Bullet */
+
+            /* Asteroids */
+            emitter = game.add.emitter(game.world.centerX, 0, 1);
+            emitter.width = game.world.width;
+            emitter.makeParticles('asteroid');
+
+            emitter.setYSpeed(100, 300);
+            emitter.setXSpeed(-15, 15);
+
+            emitter.minRotation = 0;
+            emitter.maxRotation = 0
+
+            emitter.minParticleScale = 1;
+            emitter.maxParticleScale = 1.5;
+
+
+            emitter.start(false, 1600, 5, 0);
+            /* End Asteroids */
         }
 
         function update () {
