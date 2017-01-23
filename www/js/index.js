@@ -7,6 +7,16 @@ var app = {
         HEIGHT  = document.documentElement.clientHeight;
         WIDTH = document.documentElement.clientWidth;
 
+        LEFT = 1;
+        RIGHT = -1;
+        NO_DIRECTION = 0;
+
+        VELOCITY = 250;
+
+        SHIP_SIZE = 28;
+
+        direction = 0;
+
         this.bindEvents();
     },
     bindEvents: function() {
@@ -14,20 +24,53 @@ var app = {
             document.addEventListener('deviceready', this.onDeviceReady, false);
         }
     },
+    bindAccelerometer: function () {
+        function onError() {
+            console.log('onError!');
+        }
+
+        function onSuccess(data) {
+            app.saveDirection(data);
+        }
+
+        navigator.accelerometer.watchAcceleration(onSuccess, onError, { frequency: 100 });
+    },
     onDeviceReady: function() {
+        app.bindAccelerometer();
         app.startGame();
+    },
+    saveDirection: function (data) {
+        if (data.x < 0) {
+            direction = LEFT;
+        } else if (data.x > 0 ) {
+            direction = RIGHT;
+        } else {
+            direction = NO_DIRECTION;
+        }
+    },
+    moveShip: function () {
+        ship.body.velocity.x = direction * VELOCITY;
     },
     startGame: function () {
         function preload() {
+            game.physics.startSystem(Phaser.Physics.ARCADE);
+
             game.stage.backgroundColor = WORLD_BACKGROUND;
+            game.load.image('bullet', 'assets/sprites/bullet.png');
+            game.load.image('ship', 'assets/sprites/ship.png');
         }
 
         function create () {
+            ship = game.add.sprite(WIDTH/2, HEIGHT-SHIP_SIZE, 'ship');
+            ship.anchor.set(0.5);
+            ship.angle = -90;
 
+            game.physics.arcade.enable(ship);
+            ship.body.collideWorldBounds = true;
         }
 
         function update () {
-
+            app.moveShip();            
         }
 
         var states = { preload: preload, create: create, update: update };
