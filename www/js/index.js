@@ -60,9 +60,14 @@ var app = {
             game.stage.backgroundColor = WORLD_BACKGROUND;
             game.load.image('bullet', 'assets/sprites/bullet.png');
             game.load.image('ship', 'assets/sprites/ship.png');
+            game.load.image('background', 'assets/misc/starfield.jpg');
         }
 
         function create () {
+            /* Background */
+            background = game.add.tileSprite(0, 0, WIDTH, HEIGHT, 'background');
+            /* End Backgrund */
+
             /* Ship */
             ship = game.add.sprite(WIDTH/2, HEIGHT-SHIP_SIZE, 'ship');
             ship.anchor.set(0.5);
