@@ -59,6 +59,8 @@ var app = {
     destroyAsteroid: function (asteroid, bullet) {
         emitter.remove(asteroid);
         weapon.bullets.remove(bullet);
+        puntuacion = puntuacion + 1;
+        scoreText.text = puntuacion;
     },
     startGame: function () {
         function preload() {
@@ -110,6 +112,10 @@ var app = {
 
             emitter.start(false, 0, 400);
             /* End Asteroids */
+
+            cursors = game.input.keyboard.createCursorKeys();
+            scoreText = game.add.text(WIDTH - 16, 16, 0, { fontSize: '32px', fill: '#757676' });
+            scoreText.anchor.set(1, 0);
         }
 
         function update () {
