@@ -18,6 +18,9 @@ var app = {
         BULLET_RATE = 400;
 
         direction = 0;
+        enableAccelerometer = false;
+
+        puntuacion = 0;
 
         this.bindEvents();
     },
@@ -53,6 +56,10 @@ var app = {
     moveShip: function () {
         ship.body.velocity.x = direction * SHIP_SPEED;
     },
+    destroyAsteroid: function (asteroid, bullet) {
+        emitter.remove(asteroid);
+        weapon.bullets.remove(bullet);
+    },
     startGame: function () {
         function preload() {
             game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -79,7 +86,7 @@ var app = {
             /* End Ship */
 
             /* Bullet */
-            weapon = game.add.weapon(30, 'bullet');
+            weapon = game.add.weapon(300, 'bullet');
             weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
             weapon.bulletSpeed = BULLET_SPEED;
             weapon.fireRate = BULLET_RATE;
@@ -88,26 +95,26 @@ var app = {
             /* End Bullet */
 
             /* Asteroids */
-            emitter = game.add.emitter(game.world.centerX, 0, 1);
+            emitter = game.add.emitter(game.world.centerX, 0, 10);
+            emitter.makeParticles('asteroid', 0, 200, true, false);
             emitter.width = game.world.width;
-            emitter.makeParticles('asteroid');
+            emitter.minParticleScale = 1;
+            emitter.maxParticleScale = 1.7;
 
-            emitter.setYSpeed(100, 300);
-            emitter.setXSpeed(-15, 15);
+            emitter.setYSpeed(200, 300);
+            emitter.setXSpeed(-5, 5);
 
             emitter.minRotation = 0;
-            emitter.maxRotation = 0
-
-            emitter.minParticleScale = 1;
-            emitter.maxParticleScale = 1.5;
+            emitter.maxRotation = 0;
 
 
-            emitter.start(false, 1600, 5, 0);
+            emitter.start(false, 0, 400);
             /* End Asteroids */
         }
 
         function update () {
-            app.moveShip();        
+            app.moveShip();
+            game.physics.arcade.collide(emitter, weapon.bullets, app.destroyAsteroid, null, this);
             weapon.fire();    
         }
 
